@@ -11,6 +11,6 @@ RUN pip install --no-cache-dir --disable-pip-version-check --no-compile -r requi
 
 COPY pywsgi.py ./
 COPY tubi.py ./
-COPY tubi_tmsid.csv/ ./
+COPY tubi_tmsid.csv ./
 
 CMD ["python3","pywsgi.py"]
