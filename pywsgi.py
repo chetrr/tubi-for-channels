@@ -12,7 +12,7 @@ updated_date = "Mar 19, 2025"
 # Fallback to default if invalid or unspecified
 try:
     port = int(os.environ.get("TUBI_PORT", 7777))
-except:
+except (ValueError, TypeError):
     port = 7777
 
 

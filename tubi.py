@@ -1,4 +1,4 @@
-import json, os, uuid, threading, requests, time, base64, binascii, pytz, gzip, csv, os
+import json, os, uuid, threading, requests, time, base64, binascii, pytz, gzip, csv
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from bs4 import BeautifulSoup
@@ -325,7 +325,7 @@ class Client:
 
         if error: return None, error
         if (response.status_code != 200):
-            return (f"tubitv.com/live HTTP failure {response.status_code}: {response.text}")
+            return None, None, f"tubitv.com/live HTTP failure {response.status_code}: {response.text}"
         
         html_content  = response.text
 
@@ -364,7 +364,7 @@ class Client:
         try:
             data_json = json.loads(data)
         except Exception as e:
-            return f"read_from_tubi json Exception type Error: {type(e).__name__}"
+            return None, None, f"read_from_tubi json Exception type Error: {type(e).__name__}"
 
         epg = data_json.get('epg')
         contentIdsByContainer = epg.get('contentIdsByContainer')
@@ -412,7 +412,7 @@ class Client:
                 session.close()
 
             if (response.status_code != 200):
-                return None, f"tubitv.com/oz/epg HTTP failure for {group} {response.status_code}: {response.text}"
+                return None, None, f"tubitv.com/oz/epg HTTP failure for {group} {response.status_code}: {response.text}"
 
             js = response.json()
             epg_data.extend(js.get('rows',[]))
@@ -446,7 +446,7 @@ class Client:
             print("[INFO] Reading channel id list cache")
             return channel_list, None
 
-        local_headers = self.headers
+        local_headers = self.headers.copy()
         local_device_id = self.device_id
         local_user = self.user
 
@@ -600,11 +600,7 @@ class Client:
 
         # print(json.dumps(local_epg_data[0], indent = 2))
 
-        if self.user:
-            g_name = self.user
-        else:
-            g_name = ''
-        root = ET.Element("tv", attrib={"generator-info-name": "", "generated-ts": g_name})
+        root = ET.Element("tv", attrib={"generator-info-name": "", "generated-ts": ""})
 
         stations = sorted(local_epg_data, key = lambda i: i.get('title', ''))
 
@@ -649,11 +645,8 @@ class Client:
         try:
             with open(xml_file_path, "w", encoding='utf-8') as f:
                 f.write(output_content)
-        except:
+        except Exception:
             return "[ERROR] Error writing XML"
-
-        with open(xml_file_path, 'r') as file:
-            xml_data = file.read()
 
         # Compress the XML file
         with open(xml_file_path, 'rb') as file:
@@ -731,7 +724,7 @@ class Client:
         print("[INFO] Retriving EPG API Data")
         epg_data = []
 
-        local_headers = self.headers
+        local_headers = self.headers.copy()
         local_device_id = self.device_id
         bearer, error = self.token()
         if error: return None, error
@@ -1023,11 +1016,7 @@ class Client:
 
         # print(json.dumps(channels_resp, indent = 2))
 
-        if self.user:
-            g_name = self.user
-        else:
-            g_name = ''
-        root = ET.Element("tv", attrib={"generator-info-name": g_name, "generated-ts": ""})
+        root = ET.Element("tv", attrib={"generator-info-name": "", "generated-ts": ""})
 
         # stations = sorted(local_epg_data, key = lambda i: i.get('title', ''))
 
@@ -1104,11 +1093,8 @@ class Client:
         try:
             with open(xml_file_path, "w", encoding='utf-8') as f:
                 f.write(output_content)
-        except:
+        except Exception:
             return "[ERROR] Error writing XML"
-
-        with open(xml_file_path, 'r') as file:
-            xml_data = file.read()
 
         # Compress the XML file
         with open(xml_file_path, 'rb') as file:

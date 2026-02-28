@@ -1,6 +1,6 @@
 # Tubi for Channels
 
-Current version: **3.01**
+Current version: **3.02**
 
 # About
 This takes Tubi Live TV Channels and generates an M3U playlist and EPG XMLTV file.
@@ -11,9 +11,9 @@ If you like this and other linear containers for Channels that I have created, p
 
 
 # Changes
- - Verion 3.02: 
+ - Version 3.02: 
     - Updates to EPG Data
- - Verion 3.01: Rolling back SB LIX
+ - Version 3.01: Rolling back SB LIX
  - Version 3.00d: 
     - Super Bowl LIX EPG.
  - Version 3.00c: 
@@ -66,7 +66,7 @@ You can retrieve the playlist and EPG via the status page.
 
     http://127.0.0.1:[your_port_number_here]
 
-## Environement Variables
+## Environment Variables
 | Environment Variable | Description | Default |
 |---|---|---|
 | TUBI_PORT | Port the API will be served on. You can set this if it conflicts with another service in your environment. | 7777 |
